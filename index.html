@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photography Portfolio</title>
+    <style>
+        :root { --gap: 15px; --bg: #ffffff; --text: #1a1a1a; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        h1 { text-align: center; padding: 40px 0; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* The Fixed Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--gap);
+            padding: var(--gap);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .photo-item {
+            cursor: pointer;
+            overflow: hidden;
+            background: #eee;
+            aspect-ratio: 1 / 1;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            display: block;
+        }
+
+        .photo-item:hover img { transform: scale(1.05); }
+
+        /* The Lightbox (Hidden by default) */
+        #lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 80%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        #lightbox-caption {
+            position: absolute;
+            bottom: 20px;
+            color: white;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Portfolio</h1>
+    <div id="gallery" class="grid">Loading...</div>
+
+    <div id="lightbox" onclick="this.style.display='none'">
+        <img id="lightbox-img" src="" alt="Zoomed view">
+        <div id="lightbox-caption"></div>
+    </div>
+
+    <script>
+        // 1. CONFIGURATION
+        const PROJECT_ID = "t30bvbk5"; 
+        const DATASET = "production";
+        const QUERY = encodeURIComponent('*[_type == "photo"]{title, description, "url": image.asset->url}');
+        const URL = `https://${t30bvbk5}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
+
+        // 2. FETCH DATA FROM YOUR DATABASE
+        fetch(URL)
+            .then(res => res.json())
+            .then(({ result }) => {
+                const gallery = document.getElementById('gallery');
+                if (result.length === 0) { gallery.innerHTML = "No photos found in your studio."; return; }
+                
+                gallery.innerHTML = result.map(photo => `
+                    <div class="photo-item" onclick="openLightbox('${photo.url}', '${photo.title}')">
+                        <img src="${photo.url}?w=600&h=600&fit=crop&auto=format" alt="${photo.title}" loading="lazy">
+                    </div>
+                `).join('');
+            });
+
+        // 3. LIGHTBOX LOGIC
+        function openLightbox(url, title) {
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lightbox-img');
+            const lbCap = document.getElementById('lightbox-caption');
+            
+            // We request a 1600px wide WebP version for the lightbox
+            lbImg.src = `${url}?w=1600&auto=format&q=85`;
+            lbCap.innerText = title;
+            lb.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
