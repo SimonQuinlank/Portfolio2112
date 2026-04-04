@@ -137,12 +137,18 @@
         });
 
     // 3. The Lightbox
-    function openLightbox(url, title) {
-        const lb = document.getElementById('lightbox');
-        const lbImg = document.getElementById('lightbox-img');
-        lbImg.src = url + "?w=1600&auto=format";
-        lb.style.display = 'flex';
-    }
+    function openLightbox(url, title, description) {
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    const lbCap = document.getElementById('lightbox-caption');
+    
+    lbImg.src = url + "?w=1600&auto=format";
+    
+    // This adds the title and description to the big view
+    lbCap.innerHTML = `<strong>${title}</strong><br>${description || ''}`;
+    
+    lb.style.display = 'flex';
+}
 </script>
 </body>
 </html>
