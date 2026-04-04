@@ -94,10 +94,15 @@
 
             // Fill the grid
             gallery.innerHTML = result.map(photo => `
-                <div class="photo-item" onclick="openLightbox('${photo.url}', '${photo.title}')">
-                    <img src="${photo.url}?w=600&h=600&fit=crop&auto=format" alt="${photo.title}">
-                </div>
-            `).join('');
+    <div class="photo-item" onclick="openLightbox('${photo.url}', '${photo.title}')">
+        <img src="${photo.url}?w=600&h=600&fit=crop&auto=format" alt="${photo.title}">
+        
+        <div class="photo-info">
+            <h3>${photo.title || 'Untitled'}</h3>
+            <p>${photo.description || ''}</p>
+        </div>
+    </div>
+`).join('');
         })
         .catch(err => {
             document.getElementById('gallery').innerHTML = "Error: " + err;
