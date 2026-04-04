@@ -73,38 +73,43 @@
         <div id="lightbox-caption"></div>
     </div>
 
-    <script>
-        // 1. CONFIGURATION
-        const PROJECT_ID = "t30bvbk5"; 
-        const DATASET = "production";
-        const QUERY = encodeURIComponent('*[_type == "photo"]{title, description, "url": image.asset->url}');
-        const URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
+<script>
+    // 1. The Address (Directly written out to avoid backtick errors)
+    const PROJECT_ID = "t30bvbk5";
+    const DATASET = "production";
+    const QUERY = encodeURIComponent('*[_type == "photo"]{title, description, "url": image.asset->url}');
+    const URL = "https://" + PROJECT_ID + ".api.sanity.io/v2021-10-21/data/query/" + DATASET + "?query=" + QUERY;
 
-        // 2. FETCH DATA FROM YOUR DATABASE
-        fetch(URL)
-            .then(res => res.json())
-            .then(({ result }) => {
-                const gallery = document.getElementById('gallery');
-                if (result.length === 0) { gallery.innerHTML = "No photos found in your studio."; return; }
-                
-                gallery.innerHTML = result.map(photo => `
-                    <div class="photo-item" onclick="openLightbox('${photo.url}', '${photo.title}')">
-                        <img src="${photo.url}?w=600&h=600&fit=crop&auto=format" alt="${photo.title}" loading="lazy">
-                    </div>
-                `).join('');
-            });
-
-        // 3. LIGHTBOX LOGIC
-        function openLightbox(url, title) {
-            const lb = document.getElementById('lightbox');
-            const lbImg = document.getElementById('lightbox-img');
-            const lbCap = document.getElementById('lightbox-caption');
+    // 2. The Action
+    fetch(URL)
+        .then(res => res.json())
+        .then(({ result }) => {
+            const gallery = document.getElementById('gallery');
             
-            // We request a 1600px wide WebP version for the lightbox
-            lbImg.src = `${url}?w=1600&auto=format&q=85`;
-            lbCap.innerText = title;
-            lb.style.display = 'flex';
-        }
-    </script>
+            // If the database is empty, tell us
+            if (!result || result.length === 0) {
+                gallery.innerHTML = "Database is connected, but no photos found.";
+                return;
+            }
+
+            // Fill the grid
+            gallery.innerHTML = result.map(photo => `
+                <div class="photo-item" onclick="openLightbox('${photo.url}', '${photo.title}')">
+                    <img src="${photo.url}?w=600&h=600&fit=crop&auto=format" alt="${photo.title}">
+                </div>
+            `).join('');
+        })
+        .catch(err => {
+            document.getElementById('gallery').innerHTML = "Error: " + err;
+        });
+
+    // 3. The Lightbox
+    function openLightbox(url, title) {
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        lbImg.src = url + "?w=1600&auto=format";
+        lb.style.display = 'flex';
+    }
+</script>
 </body>
 </html>
