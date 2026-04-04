@@ -4,92 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photography Portfolio</title>
-    <style>
-        .photo-info {
-    padding: 10px;
-    background: #fff;
-}
+   <style>
+    :root { --gap: 20px; --bg: #f8f8f8; --card-bg: #ffffff; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
+    h1 { text-align: center; padding: 60px 0 20px; letter-spacing: 3px; text-transform: uppercase; font-weight: 300; }
 
-.photo-info h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #333;
-}
+    /* The Grid */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: var(--gap);
+        padding: var(--gap);
+        max-width: 1400px;
+        margin: 0 auto;
+    }
 
-.photo-info p {
-    margin: 5px 0 0;
-    font-size: 0.9rem;
-    color: #666;
-    line-height: 1.4;
-}
+    /* The Card */
+    .photo-item {
+        background: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+    }
 
-/* Optional: Make the grid items look more like 'cards' */
-.photo-item {
-    border: 1px solid #eee;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #fff;
-    aspect-ratio: auto; /* Change from 1/1 if you want to see the text below */
-    display: flex;
-    flex-direction: column;
-}
-        :root { --gap: 15px; --bg: #ffffff; --text: #1a1a1a; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; }
-        h1 { text-align: center; padding: 40px 0; letter-spacing: 2px; text-transform: uppercase; }
+    .photo-item:hover { transform: translateY(-5px); }
 
-        /* The Fixed Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: var(--gap);
-            padding: var(--gap);
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    /* The Image Part */
+    .photo-item img {
+        width: 100%;
+        aspect-ratio: 3 / 2; /* Professional photo ratio */
+        object-fit: cover;
+        display: block;
+    }
 
-        .photo-item {
-            cursor: pointer;
-            overflow: hidden;
-            background: #eee;
-            aspect-ratio: 1 / 1;
-        }
+    /* The Caption Part */
+    .photo-info {
+        padding: 20px;
+    }
 
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-            display: block;
-        }
+    .photo-info h3 {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+        color: #1a1a1a;
+    }
 
-        .photo-item:hover img { transform: scale(1.05); }
+    .photo-info p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #666;
+        line-height: 1.5;
+    }
 
-        /* The Lightbox (Hidden by default) */
-        #lightbox {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
-        }
+    /* Lightbox */
+    #lightbox {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.95);
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        cursor: zoom-out;
+    }
 
-        #lightbox img {
-            max-width: 90%;
-            max-height: 80%;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        #lightbox-caption {
-            position: absolute;
-            bottom: 20px;
-            color: white;
-            text-align: center;
-            width: 100%;
-        }
-    </style>
+    #lightbox img { max-width: 90%; max-height: 75%; object-fit: contain; }
+    
+    #lightbox-caption {
+        color: white;
+        margin-top: 20px;
+        text-align: center;
+        max-width: 80%;
+    }
+</style>
 </head>
 <body>
 
